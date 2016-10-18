@@ -76,10 +76,12 @@ def getAURLs(surl):
     aitms = entry.find_all("a")
     for aitm in aitms:
         aurl = aitm.get("href");
-        aurls.append(aurl);
         aname = aitm.string;
-        print(aname);
-        print(aurl);
+        if(aname == None):
+            continue;
+        if(aname.find('話') >= 0):
+            print(aname);
+            aurls.append(aurl);
     return aurls;
     
 
@@ -100,27 +102,13 @@ for itm in items:
     print("---------------------")
     print(itm.a.string);
     print(aurl);
-    getAURLs(aurl)
-
-
-
-# items =soup.find_all("item")
-# for itm in items:
-#     itmurl = itm.get("rdf:about");
-#     atitle = itm.title.string;
-#     aname = itm.description.string;
-#     b9urls = getB9URL(itmurl);
-#     print(atitle + ' +++++++++++++++++++++++');
-#     print('B9URLs')
-#     print(b9urls)
-#     for b9url in b9urls:
-#         mp4urls = getMP4URLfromB9(b9url);
-#         print('MP4URLs')
-#         print(mp4urls)
-    
-
-
-
+    surls = getAURLs(aurl);
+    for surl in surls:
+        b9urls = getB9URL(surl);
+        for b9url in b9urls:
+            mp4urls = getMP4URLfromB9(b9url);
+            print('+++++' + b9url + '+++++');
+            print(mp4urls);
 
 
 
