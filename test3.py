@@ -34,7 +34,7 @@ def downloadMP4fromURL(vurl):
 # B9のエントリテキストからHD画質のMP4リンクを見つける
 def getMP4URLfromB9text(src):
     dst = re.sub(r"<.*?>", '', src)
-    lines = dst.split("\n")
+    lines = dst.split("\r\n")
     hdfound = False
     mp4urls = []
     for line in lines:
@@ -46,28 +46,36 @@ def getMP4URLfromB9text(src):
     
 # B9のページからHD画質のMP4に繋がるリンクを探す
 def getMP4URLfromB9(b9url):
-    sp = bs4.BeautifulSoup(urllib.request.urlopen(request_as_fox(b9url)).read(), "lxml")
-    infos = sp.find("div", class_="vinfor")
-    contributor = infos.find("span", class_="left").a.string
-    dls = infos.find("div", id="dl")
-    mp4urls = getMP4URLfromB9text(str(dls))
+    mp4urls = [];
+    try:
+        sp = bs4.BeautifulSoup(urllib.request.urlopen(request_as_fox(b9url)).read(), "lxml")
+        infos = sp.find("div", class_="vinfor")
+        contributor = infos.find("span", class_="left").a.string
+        dls = infos.find("div", id="dl")
+        mp4urls = getMP4URLfromB9text(str(dls))
+    except:
+        print('Failed to get mp4 links...');
     return mp4urls;
 
 # Youtubeアニメ無料動画のアニメ各話エントリページから、B9のURLを見つける
 def getB9URL(surl):
     b9urls = []
-    sp = bs4.BeautifulSoup(urllib.request.urlopen(surl).read(), "lxml")
-    entry = sp.find("div", class_="mainEntrykiji")
-    eurls = entry.find_all("a")
-    for eurl in eurls:
-        siteurl = eurl.get("href")
-        sitename = eurl.string
-        if(str(sitename) == '【B9】'):
-            b9urls.append(siteurl);
+    try:
+        sp = bs4.BeautifulSoup(urllib.request.urlopen(surl).read(), "lxml")
+        entry = sp.find("div", class_="mainEntrykiji")
+        eurls = entry.find_all("a")
+        for eurl in eurls:
+            siteurl = eurl.get("href")
+            sitename = eurl.string
+            if(str(sitename) == '【B9】'):
+                b9urls.append(siteurl);
+    except:
+        print('Failed to get b9 links...');
     return b9urls
 
 # アニメタイトルページからアニメ各話ページヘのURLを得る
-def getAURLs(surl):
+def getAnimeURLs(surl):
+    anames = [];
     aurls = [];
     if(surl.find('tvanimedouga.blog93.fc2.com') < 0):
         return aurls;
@@ -80,9 +88,9 @@ def getAURLs(surl):
         if(aname == None):
             continue;
         if(aname.find('話') >= 0):
-            print(aname);
+            anames.append(aname);
             aurls.append(aurl);
-    return aurls;
+    return [anames, aurls];
     
 
 
@@ -102,13 +110,16 @@ for itm in items:
     print("---------------------")
     print(itm.a.string);
     print(aurl);
-    surls = getAURLs(aurl);
-    for surl in surls:
+    [snames, surls] = getAnimeURLs(aurl);
+    for (surl, sname) in zip(surls, snames):
         b9urls = getB9URL(surl);
+        print(sname);
+        print(surl);
         for b9url in b9urls:
             mp4urls = getMP4URLfromB9(b9url);
-            print('+++++' + b9url + '+++++');
-            print(mp4urls);
+            if(len(mp4urls) != 0):
+                print('+++++' + b9url + '+++++');
+                print(mp4urls);
 
 
 
