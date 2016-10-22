@@ -7,6 +7,8 @@ import urllib.request
 import bs4
 import re
 import subprocess
+import psycopg2
+import psycopg2.extras
 
 class color:
     OK = '\33[92m'
@@ -19,17 +21,23 @@ axelcmd = 'axel -a -v -n 5 -o '
 
 aname = '';
 
+dbhost = '133.130.106.168'
+dbname = 'anime'
+dbuser = 'ery'
+dbpswd = 'biztablet'
+
+
 
 def request_as_fox(url):
-	headers={"User-Agent":"Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0"}
-	return urllib.request.Request(url,None,headers)
+    headers={"User-Agent":"Mozilla/5.0 (X11; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0"}
+    return urllib.request.Request(url,None,headers)
 
 # ダウンロードを実行
 def downloadMP4fromURL(vurl):
     fname = vurl.split('/')[-1]
     cmd = axelcmd + dpath + fname + ' '  + vurl
     subprocess.call(cmd, shell=True)
-    return fname;
+    return fname
     
 # B9のエントリテキストからHD画質のMP4リンクを見つける
 def getMP4URLfromB9text(src):
@@ -46,7 +54,7 @@ def getMP4URLfromB9text(src):
     
 # B9のページからHD画質のMP4に繋がるリンクを探す
 def getMP4URLfromB9(b9url):
-    mp4urls = [];
+    mp4urls = []
     try:
         sp = bs4.BeautifulSoup(urllib.request.urlopen(request_as_fox(b9url)).read(), "lxml")
         infos = sp.find("div", class_="vinfor")
@@ -92,6 +100,24 @@ def getAnimeURLs(surl):
             aurls.append(aurl);
     return [anames, aurls];
     
+#MAIN
+
+# Create connection to anime DB
+dbcn = psycopg2.connect("host=" + dbhost + " dbname=" + dbname + " user=" + dbuser + " password=" + dbpswd)
+dbcn.autocommit = True
+cur = dbcn.cursor()
+print(cur)
+
+#DB tests
+cur.execute("select version()")
+for row in cur:
+    print(row)
+
+
+dcur = dbcn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+dcur.execute("select id, anime_name from anime")
+for row in dcur:
+    print(row["id"], row["anime_name"])
 
 
 rssurl = 'http://tvanimedouga.blog93.fc2.com/?xml'
@@ -100,6 +126,8 @@ soup = bs4.BeautifulSoup(urllib.request.urlopen(rssurl).read(), "lxml")
 mainurl = 'http://tvanimedouga.blog93.fc2.com/'
 mainsp = bs4.BeautifulSoup(urllib.request.urlopen(mainurl).read(), "lxml");
 
+
+"""
 
 menu = mainsp.select("#menu1Block")
 items = menu[0].find_all("li");
@@ -122,7 +150,7 @@ for itm in items:
                 print(mp4urls);
 
 
-
+"""
 
 
 
