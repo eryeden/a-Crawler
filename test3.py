@@ -228,6 +228,7 @@ for itm in items:
         for row in cur:
             rslt.append(row)
         if (len(rslt) != 0):
+            is_registered = True;
             print("Already Registered!!!")
 
         if(is_registered == False):
