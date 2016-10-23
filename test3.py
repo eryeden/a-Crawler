@@ -229,23 +229,23 @@ for itm in items:
             rslt.append(row)
         if (len(rslt) != 0):
             print("Already Registered!!!")
-            continue;
 
-        for b9url in b9urls:
+        if(is_registered == False):
+            for b9url in b9urls:
 
-            #B9リンクループ
-            mp4urls = getMP4URLfromB9(b9url);
-            if(len(mp4urls) != 0):
-                for mp4url in mp4urls:
-                    mp4links.append(mp4url);
+                #B9リンクループ
+                mp4urls = getMP4URLfromB9(b9url);
+                if(len(mp4urls) != 0):
+                    for mp4url in mp4urls:
+                        mp4links.append(mp4url);
 
-        print('##############################');
-        print(anime_name);
-        print(anime_discription);
-        print(episode);
-        print(src_link);
-        print(mp4links);
-        print(dt.now().strftime('%Y-%m-%d %H:%M:%S'))
-        registerAnime([anime_name, anime_discription, episode, src_link, mp4links, dt.now().strftime('%Y-%m-%d %H:%M:%S')], cur);
+            print('##############################');
+            print(anime_name);
+            print(anime_discription);
+            print(episode);
+            print(src_link);
+            print(mp4links);
+            print(dt.now().strftime('%Y-%m-%d %H:%M:%S'))
+            registerAnime([anime_name, anime_discription, episode, src_link, mp4links, dt.now().strftime('%Y-%m-%d %H:%M:%S')], cur);
 
 
