@@ -217,7 +217,6 @@ for itm in items:
     for (src_link, anime_discription) in zip(src_links, anime_discriptions):
         #アニメ各話ループ このループが基本になる
 
-        b9urls = getB9URL(src_link);
         mp4links = [];
         episode = str(anime_discription).split("話")[0];
 
@@ -232,6 +231,7 @@ for itm in items:
             print("Already Registered!!!")
 
         if(is_registered == False):
+            b9urls = getB9URL(src_link);
             for b9url in b9urls:
 
                 #B9リンクループ
