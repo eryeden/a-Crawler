@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>
+        anime infos
+    </title>
+</head>
+
+<body>
+
+{% for item in message %}
+    <section>
+        <h3>
+            <a href="{{ item[1] }}">
+                {{ item[0] }}
+            </a>
+        </h3> <br>
+    </section>
+{% endfor %}
+
+
+</body>
+</html>

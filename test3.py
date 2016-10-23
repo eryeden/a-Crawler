@@ -187,9 +187,11 @@ for row in cur:
 
 
 dcur = dbcn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-dcur.execute("select id, anime_name from anime")
+dcur.execute("select src_link from anime")
+registered_src_links = [];
 for row in dcur:
-    print(row["id"], row["anime_name"])
+    registered_src_links.append(str(row["src_link"]));
+    print(row["src_link"])
 
 
 rssurl = 'http://tvanimedouga.blog93.fc2.com/?xml'
@@ -214,6 +216,11 @@ for itm in items:
 
     [anime_discriptions, src_links] = getAnimeURLs(anime_main_link);
 
+    dcur.execute("select src_link from anime")
+    registered_src_links = [];
+    for row in dcur:
+        registered_src_links.append(str(row["src_link"]));
+
     for (src_link, anime_discription) in zip(src_links, anime_discriptions):
         #アニメ各話ループ このループが基本になる
 
@@ -222,15 +229,23 @@ for itm in items:
 
         # 登録済みか検索
         is_registered = False;
-        cur.execute("select id from anime where src_link = (%s)", [src_link]);
-        rslt = [];
-        for row in cur:
-            rslt.append(row)
-        if (len(rslt) != 0):
-            is_registered = True;
-            print("Already Registered!!!")
+
+#        cur.execute("select id from anime where src_link = (%s)", [src_link]);
+#        rslt = [];
+#        for row in cur:
+#            rslt.append(row)
+#        if (len(rslt) != 0):
+#            is_registered = True;
+#            print("Already Registered!!!")
+
+        for rsl in registered_src_links:
+            if(src_link == rsl):
+                is_registered = True;
+                print("Already Registered!!!")
+                break;
 
         if(is_registered == False):
+            print("Registering ...")
             b9urls = getB9URL(src_link);
             for b9url in b9urls:
 

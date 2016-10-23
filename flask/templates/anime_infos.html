@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <title>
+        anime infos
+    </title>
+</head>
+
+<body>
+
+{% for item in message %}
+    <section>
+        <h3>{{ item[0] }}</h3>
+        <a href="{{ item[2] }}"> Youtube アニメ無料動画 </a> <br>
+        {% for link in item[3] %}
+            <a href="{{ link }}"> {{ link }} </a> <br>
+        {% endfor %}
+    </section>
+{% endfor %}
+
+<p><a href="/all">戻る</a> </p>
+
+</body>
+</html>
