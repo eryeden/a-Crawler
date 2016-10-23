@@ -86,7 +86,7 @@ def getAnimeURLs(surl):
     anames = []
     aurls = []
     if(surl.find('tvanimedouga.blog93.fc2.com') < 0):
-        return aurls
+        return [anames, aurls];
     sp = bs4.BeautifulSoup(urllib.request.urlopen(surl).read(), "lxml")
     entry = sp.find("div", class_="mainEntrykiji")
     aitms = entry.find_all("a")
