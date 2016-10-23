@@ -137,7 +137,6 @@ def registerAnime(anime_infos, dbcur):
         #登録済みである場合
 
         #dbcur.execute("")
-        print("Already Registered!!!")
         dbcur.execute("UPDATE anime set (anime_name, anime_description, date, episode, src_link) = ((%s), (%s), (%s), (%s), (%s)) where src_link = (%s)", [anime_name, anime_discription, date_time, anime_episode, src_link, src_link]);
 
 
@@ -221,6 +220,16 @@ for itm in items:
         b9urls = getB9URL(src_link);
         mp4links = [];
         episode = str(anime_discription).split("話")[0];
+
+        # 登録済みか検索
+        is_registered = False;
+        cur.execute("select id from anime where src_link = (%s)", [src_link]);
+        rslt = [];
+        for row in cur:
+            rslt.append(row)
+        if (len(rslt) != 0):
+            print("Already Registered!!!")
+            continue;
 
         for b9url in b9urls:
 
