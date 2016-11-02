@@ -84,7 +84,17 @@ for itm in items:
     print(str(itmurl))
     aname = itm.description.string
     print(aname)
-    getB9URL(itmurl)
+    anime_title = itm.find("dc:subject").string
+    anime_description = itm.find("description").string.replace(anime_title + '　第','')
+    anime_epsode = anime_description.split("話")[0]
+    src_link = itm.get("rdf:about")
+
+    print(anime_title)
+    print(anime_description)
+    print(anime_epsode)
+    print(src_link)
+
+    #getB9URL(itmurl)
 
 
 
